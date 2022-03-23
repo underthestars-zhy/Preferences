@@ -66,9 +66,9 @@ public final class PreferencesWindowController: NSWindowController, NSWindowDele
 			backing: .buffered,
 			defer: true
 		)
-		window.delegate = self
 		self.hidesToolbarForSingleItem = hidesToolbarForSingleItem
 		super.init(window: window)
+		window.delegate = self
 
 		window.contentViewController = tabViewController
 
