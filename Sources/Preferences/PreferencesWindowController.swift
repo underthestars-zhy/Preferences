@@ -41,6 +41,14 @@ public final class PreferencesWindowController: NSWindowController, NSWindowDele
 		}
 	}
 
+    public func windowDidResignKey(_ notification: Notification) {
+        if #available(macOS 10.15, *) {
+            KeyModel.shared.key = false
+        } else {
+            // Fallback on earlier versions
+        }
+    }
+
 	public func windowDidBecomeKey(_ notification: Notification) {
 		if #available(macOS 10.15, *) {
 			KeyModel.shared.key = true
@@ -68,6 +76,7 @@ public final class PreferencesWindowController: NSWindowController, NSWindowDele
 		)
 		self.hidesToolbarForSingleItem = hidesToolbarForSingleItem
 		super.init(window: window)
+        print("do")
 		window.delegate = self
 
 		window.contentViewController = tabViewController
