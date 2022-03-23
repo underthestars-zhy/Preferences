@@ -1,10 +1,18 @@
 import Cocoa
+import SwiftUI
 
 extension NSWindow.FrameAutosaveName {
 	static let preferences: NSWindow.FrameAutosaveName = "com.sindresorhus.Preferences.FrameAutosaveName"
 }
 
-public final class PreferencesWindowController: NSWindowController {
+@available(macOS 10.15, *)
+public class KeyModel: ObservableObject {
+	public static let shared = KeyModel()
+
+	@Published public var key = false
+}
+
+public final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
 	private let tabViewController = PreferencesTabViewController()
 
 	public var isAnimated: Bool {
@@ -25,6 +33,22 @@ public final class PreferencesWindowController: NSWindowController {
 			|| (tabViewController.preferencePanesCount > 1)
 	}
 
+	public func windowWillClose(_ notification: Notification) {
+		if #available(macOS 10.15, *) {
+			KeyModel.shared.key = false
+		} else {
+			// Fallback on earlier versions
+		}
+	}
+
+	public func windowDidBecomeKey(_ notification: Notification) {
+		if #available(macOS 10.15, *) {
+			KeyModel.shared.key = true
+		} else {
+			// Fallback on earlier versions
+		}
+	}
+
 	public init(
 		preferencePanes: [PreferencePane],
 		style: Preferences.Style = .toolbarItems,
@@ -42,6 +66,7 @@ public final class PreferencesWindowController: NSWindowController {
 			backing: .buffered,
 			defer: true
 		)
+		window.delegate = self
 		self.hidesToolbarForSingleItem = hidesToolbarForSingleItem
 		super.init(window: window)
 
