@@ -10,6 +10,7 @@ public class KeyModel: ObservableObject {
 	public static let shared = KeyModel()
 
 	@Published public var key = false
+    @Published public var event: NSEvent?
 }
 
 public final class PreferencesWindowController: NSWindowController, NSWindowDelegate {
@@ -44,18 +45,20 @@ public final class PreferencesWindowController: NSWindowController, NSWindowDele
     public func windowDidResignKey(_ notification: Notification) {
         if #available(macOS 10.15, *) {
             KeyModel.shared.key = false
-        } else {
-            // Fallback on earlier versions
         }
     }
 
 	public func windowDidBecomeKey(_ notification: Notification) {
 		if #available(macOS 10.15, *) {
 			KeyModel.shared.key = true
-		} else {
-			// Fallback on earlier versions
 		}
 	}
+
+    override public func keyDown(with event: NSEvent) {
+        if #available(macOS 10.15, *) {
+            KeyModel.shared.event = event
+        }
+    }
 
 	public init(
 		preferencePanes: [PreferencePane],
